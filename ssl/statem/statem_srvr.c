@@ -2787,7 +2787,12 @@ WORK_STATE tls_post_process_client_hello(SSL_CONNECTION *s, WORK_STATE wst)
                 s->s3.tmp.new_cipher = cipher;
             }
             if (!s->hit) {
-                if (!tls_choose_sigalg(s, 1)) {
+                /*
+                 * A HelloRetryRequest for a stateless cookie goes out before
+                 * any credential is selected, so a PSK-only server need not
+                 * hold a certificate for it.
+                 */
+                if (!tls_hrr_cookie_pending(s) && !tls_choose_sigalg(s, 1)) {
                     /* SSLfatal already called */
                     goto err;
                 }

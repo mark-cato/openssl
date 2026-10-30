@@ -33,6 +33,16 @@ OpenSSL 4.2
 
 ### Changes between 4.1 and 4.2 [xx XXX xxxx]
 
+ * A DTLS 1.3 server that requires a HelloRetryRequest cookie no longer
+   rejects a ClientHello whose PSK identity is unknown, or that needs a
+   certificate it does not have, before the cookie has been validated.
+   A PSK-only server that answers the first ClientHello statelessly can
+   now send the HelloRetryRequest and decide on the PSK identity when the
+   retried ClientHello carries a valid cookie.
+   <!-- https://github.com/openssl/openssl/pull/33682 -->
+
+   *Mark Kaplan (Cato Networks)*
+
  * Added `CRYPTO_new_ex_data_ex()`, an `OSSL_LIB_CTX`-aware variant of
    `CRYPTO_new_ex_data()`.
 

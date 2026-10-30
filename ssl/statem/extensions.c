@@ -1709,6 +1709,18 @@ int tls_hrr_cookie_required(const SSL_CONNECTION *s)
         && (s->options & SSL_OP_COOKIE_EXCHANGE) != 0;
 }
 
+/*
+ * Is a DTLS 1.3 server still waiting for a valid HelloRetryRequest cookie?
+ * Until the cookie arrives the ClientHello is answered by a HelloRetryRequest
+ * whatever its PSK says, so no credential needs to be selected for it.
+ */
+int tls_hrr_cookie_pending(const SSL_CONNECTION *s)
+{
+    return SSL_CONNECTION_IS_DTLS13(s)
+        && tls_hrr_cookie_required(s)
+        && !s->ext.cookieok;
+}
+
 static int final_key_share(SSL_CONNECTION *s, unsigned int context, int sent)
 {
 #if !(defined(OPENSSL_NO_TLS1_3) && defined(OPENSSL_NO_DTLS1_3))
